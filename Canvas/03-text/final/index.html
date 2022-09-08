@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Pie Builder</title>
+    <style>
+        #options {
+            width: 300px;
+            display: inline-block;
+            vertical-align: top;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" height="400" width="400"></canvas>
+    <div id="options">
+        <fieldset>
+            <legend>Please choose a crust</legend>
+            <input type="radio" name="crust" value="none" checked/>None<br>
+            <input type="radio" name="crust" value="pastry"/>Pastry<br>
+            <input type="radio" name="crust" value="graham"/>Graham Cracker<br>
+            <input type="radio" name="crust" value="chocolate"/>Chocolate<br>
+        </fieldset>
+        <fieldset>
+            <legend>Please choose a filling</legend>
+            <input type="radio" name="filling" value="none" checked/>None<br>
+            <input type="radio" name="filling" value="keylime"/>Key Lime<br>
+            <input type="radio" name="filling" value="pumpkin"/>Pumpkin<br>
+            <input type="radio" name="filling" value="lemon"/>lemon<br>
+        </fieldset>
+        <fieldset>
+            <legend>Please choose a topping</legend>
+            <input type="radio" name="topping" value="none" checked/>None<br>
+            <input type="radio" name="topping" value="meringue"/>Meringue<br>
+        </fieldset>
+    </div>
+    <script>
+        document.getElementById('options').addEventListener('change', () => {
+            const options = {};
+            document.querySelectorAll('[name=crust]').forEach(elem => {
+                if (elem.checked) {
+                    options.crust = elem.value;
+                }
+            });
+            document.querySelectorAll('[name=filling]').forEach(elem => {
+                if (elem.checked) {
+                    options.filling = elem.value;
+                }
+            });
+            document.querySelectorAll('[name=topping]').forEach (elem => {
+                if (elem.checked) {
+                    options.topping = elem.value;
+                }
+            });
+
+            render(options);
+        });
+
+        function render(options) {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            let outerCrustColor = '';
+            let innerCrustColor = '';
+            switch (options.crust) {
+                case 'pastry':
+                    outerCrustColor = '#DECCB8';
+                    innerCrustColor = '#F2DFC9';
+                    break;
+                case 'graham':
+                    outerCrustColor = '#BA870D';
+                    innerCrustColor = '#DEA010';
+                    break;
+                case 'chocolate':
+                    outerCrustColor = '#2E1802';
+                    innerCrustColor = '#422303';
+                    break;
+            }
+            if (outerCrustColor && innerCrustColor) {
+                ctx.fillStyle = outerCrustColor;
+                ctx.beginPath();
+                ctx.ellipse(200, 200, 150, 150, 0, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.fillStyle = innerCrustColor;
+                ctx.beginPath();
+                ctx.ellipse(200, 200, 110, 110, 0, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+            switch (options.filling) {
+                case 'keylime':
+                    ctx.fillStyle='#DFF5A2';
+                    break;
+                case 'pumpkin':
+                    ctx.fillStyle='#BD7502';
+                    break;
+                case 'lemon':
+                    ctx.fillStyle='#FFF48D';
+                    break;
+                default:
+                    ctx.fillStyle='transparent';
+            }
+            ctx.beginPath();
+            ctx.ellipse(200, 200, 140, 140, 0, 0, 2 * Math.PI);
+            ctx.fill();
+
+            switch (options.topping) {
+                case 'meringue':
+                    ctx.fillStyle='white';
+                    ctx.strokeStyle='#B3702D';
+                    ctx.beginPath();
+                    ctx.ellipse(200, 200, 130, 130, 0, 0, 2 * Math.PI);
+                    ctx.fill();
+                    ctx.stroke();
+                    for (let i = 0; i < 6; i++) {
+                        ctx.save(); 
+                        ctx.translate(200, 200);
+                        ctx.rotate(i / 6 * 2 * Math.PI);
+                        ctx.beginPath();
+                        ctx.moveTo(0, 0);
+                        ctx.quadraticCurveTo(65, -65, 0, -130);
+                        ctx.stroke();
+                        ctx.restore();
+                    }
+                break;
+            }
+
+            const spans = [
+                {
+                    font: 'bold 25px sans-serif',
+                    text: "Bethany's",
+                    fillStyle: '#A593C2'
+                },
+                {
+                    font: '25px sans-serif',
+                    text: ' Custom Pie Maker',
+                    fillStyle:'#4DCFA8'
+                }
+            ];
+
+            let totalWidth = 0;
+            spans.forEach(span => {
+                ctx.font = span.font;
+                span.dims = ctx.measureText(span.text);
+                totalWidth += span.dims.width;
+            });
+
+            let currentX = 200 - totalWidth / 2;
+            spans.forEach(span => {
+                ctx.fillStyle = span.fillStyle;
+                ctx.font = span.font;
+                ctx.fillText(span.text, currentX, 30);
+                currentX += span.dims.width;
+            });
+        }
+    </script>
+</body>
+</html>

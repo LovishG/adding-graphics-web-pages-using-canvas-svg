@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Pie Builder</title>
+    <style>
+        #options {
+            width: 300px;
+            display: inline-block;
+            vertical-align: top;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" height="400" width="400"></canvas>
+    <div id="options">
+        <fieldset>
+            <legend>Please choose a crust</legend>
+            <input type="radio" name="crust" value="none" checked/>None<br>
+            <input type="radio" name="crust" value="pastry"/>Pastry<br>
+            <input type="radio" name="crust" value="graham"/>Graham Cracker<br>
+            <input type="radio" name="crust" value="chocolate"/>Chocolate<br>
+        </fieldset>
+    </div>
+    <script>
+        document.getElementById('options').addEventListener('change', () => {
+            const options = {};
+            document.querySelectorAll('[name=crust]').forEach(elem => {
+                if (elem.checked) {
+                    options.crust = elem.value;
+                }
+            });
+
+            render(options);
+        });
+
+        function render(options) {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            let outerCrustColor = '';
+            let innerCrustColor = '';
+            switch (options.crust) {
+                case 'pastry':
+                    outerCrustColor = '#DECCB8';
+                    innerCrustColor = '#F2DFC9';
+                    break;
+                case 'graham':
+                    outerCrustColor = '#BA870D';
+                    innerCrustColor = '#DEA010';
+                    break;
+                case 'chocolate':
+                    outerCrustColor = '#2E1802';
+                    innerCrustColor = '#422303';
+                    break;
+            }
+            if (outerCrustColor && innerCrustColor) {
+                ctx.fillStyle = outerCrustColor;
+                ctx.beginPath();
+                ctx.ellipse(200, 200, 150, 150, 0, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.fillStyle = innerCrustColor;
+                ctx.beginPath();
+                ctx.ellipse(200, 200, 110, 110, 0, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+        }
+    </script>
+</body>
+</html>
